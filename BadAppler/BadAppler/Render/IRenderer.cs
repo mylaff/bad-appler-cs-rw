@@ -8,6 +8,6 @@ namespace BadAppler.Render
     {
         public Frame<T> ProcessBitmap(Bitmap bitmap);
 
-        public List<Frame<byte>> ProcessAll(Queue<Bitmap> bitmaps);
+        public List<Frame<byte>> ProcessAll(IReadOnlyList<Bitmap> bitmaps);
     }
 }

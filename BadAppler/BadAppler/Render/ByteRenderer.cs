@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using BadAppler.Base;
 
@@ -19,17 +20,16 @@ namespace BadAppler.Render
 
         public ByteRendererOptions Options { get; init; }
 
-        public Queue<Bitmap> Bitmaps { get; }
+        public IReadOnlyList<Bitmap> Bitmaps { get; }
 
         public ByteRenderer(ByteRendererOptions options)
         {
             Options = options;
         }
 
-        public ByteRenderer(Queue<Bitmap> bitmaps, ByteRendererOptions options) : this(options)
+        public ByteRenderer(IReadOnlyList<Bitmap> bitmaps, ByteRendererOptions options) : this(options)
         {
             Bitmaps = bitmaps;
-            calculateRatios(bitmaps.Peek());
         }
 
         private byte GetPixelIntensity(int x, int y, Bitmap bitmap)
@@ -66,21 +66,27 @@ namespace BadAppler.Render
 
         public List<Frame<byte>> ProcessAll()
         {
-            calculateRatios(Bitmaps.Peek());
-
             return ProcessAll(Bitmaps);
         }
 
-        public List<Frame<byte>> ProcessAll(Queue<Bitmap> bitmaps)
+        public List<Frame<byte>> ProcessAll(IReadOnlyList<Bitmap> bitmaps)
         {
+            if (bitmaps.Count == 0)
+                throw new Exception("Empty Bitmap collection was given to the renderer.");
+
+            calculateRatios(bitmaps[0]);
+
             List<Frame<byte>> processed = new List<Frame<byte>>();
 
-            while (bitmaps.Count > 0)
+            foreach (var bitmap in bitmaps)
             {
-                if (Options.CropImages)
-                    processed.Add(ProcessBitmap(CropBitmap(bitmaps.Dequeue())));
-                else
-                    processed.Add(ProcessBitmap(bitmaps.Dequeue()));
+                using (bitmap)
+                {
+                    if (Options.CropImages)
+                        processed.Add(ProcessBitmap(CropBitmap(bitmap)));
+                    else
+                        processed.Add(ProcessBitmap(bitmap));
+                }
             }
 
             return processed;
