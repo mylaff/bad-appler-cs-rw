@@ -5,57 +5,31 @@ using BadAppler.Base;
 
 namespace BadAppler.Render
 {
-    class ByteRendererOptions
-    { 
-        public class ColorWeights
-        {
-            public float R { get; set; } = 0.3F;
-
-            public float G { get; set; } = 0.59F;
-
-            public float B { get; set; } = 0.11F;
-        }
-
-        public struct FrameOffset
-        {
-            public int Top { get; set; }
-
-            public int Right { get; set; }
-
-            public int Bottom { get; set; }
-
-            public int Left { get; set; }
-        }
-
-        public int Width { get; set; }
-
-        public int Height { get; set; }
-
-        public bool CropImages { get; set; }
-
-        public FrameOffset Offset { get; set; }
-
-        public ColorWeights Weights { get; set; }
-
-        public int WidthRatio { get; set; }
-
-        public int HeightRatio { get; set; }
-
-        public int VerticalSkipAhead { get; set; }
-
-        public int HorizontalSkipAhead { get; set; }
-    }
-
-    class ByteRenderer
+    class ByteRenderer : IRenderer<byte>
     {
+        private int widthRatio;
+
+        private int heightRatio;
+
+        private void calculateRatios(Bitmap bitmap) 
+        {
+            widthRatio = (bitmap.Width - Options.Offset.Left - Options.Offset.Right) / Options.TargetWidth;
+            heightRatio = (bitmap.Height - Options.Offset.Top - Options.Offset.Bottom) / Options.TargetHeight;
+        }
+
         public ByteRendererOptions Options { get; init; }
 
-        private Queue<Bitmap> Bitmaps { get; }
+        public Queue<Bitmap> Bitmaps { get; }
 
-        public ByteRenderer(Queue<Bitmap> bitmaps, ByteRendererOptions options)
+        public ByteRenderer(ByteRendererOptions options)
         {
             Options = options;
+        }
+
+        public ByteRenderer(Queue<Bitmap> bitmaps, ByteRendererOptions options) : this(options)
+        {
             Bitmaps = bitmaps;
+            calculateRatios(bitmaps.Peek());
         }
 
         private byte GetPixelIntensity(int x, int y, Bitmap bitmap)
@@ -69,8 +43,8 @@ namespace BadAppler.Render
         {
             uint intensity = 0, count = 0;
 
-            for (int y = by * Options.HeightRatio; y < (by + 1) * Options.HeightRatio; y += Options.VerticalSkipAhead)
-                for (int x = bx * Options.WidthRatio; x < (bx + 1) * Options.WidthRatio; x += Options.HorizontalSkipAhead)
+            for (int y = by * heightRatio; y < (by + 1) * heightRatio; y += Options.VerticalSkipAhead)
+                for (int x = bx * widthRatio; x < (bx + 1) * widthRatio; x += Options.HorizontalSkipAhead)
                 {
                     intensity += GetPixelIntensity(x, y, bitmap);
                     count += 1;
@@ -81,13 +55,20 @@ namespace BadAppler.Render
 
         public Frame<byte> ProcessBitmap(Bitmap bitmap)
         {
-            Frame<byte> grayScale = new Frame<byte>(Options.Width, Options.Height);
+            Frame<byte> grayScale = new Frame<byte>(Options.TargetWidth, Options.TargetHeight);
 
-            for (int y = 0; y < Options.Height - 1; y++)
-                for (int x = 0; x < Options.Width - 1; x++)
+            for (int y = 0; y < Options.TargetHeight - 1; y++)
+                for (int x = 0; x < Options.TargetWidth - 1; x++)
                     grayScale.SetPixel(x, y, GetBlockIntensity(x, y, bitmap));
 
             return grayScale;
+        }
+
+        public List<Frame<byte>> ProcessAll()
+        {
+            calculateRatios(Bitmaps.Peek());
+
+            return ProcessAll(Bitmaps);
         }
 
         public List<Frame<byte>> ProcessAll(Queue<Bitmap> bitmaps)
