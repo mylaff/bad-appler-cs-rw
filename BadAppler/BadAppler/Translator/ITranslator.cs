@@ -1,4 +1,4 @@
-﻿using BadAppler.Render;
+﻿using BadAppler.Base;
 using System.Collections.Generic;
 
 namespace BadAppler.Translator
