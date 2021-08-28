@@ -1,4 +1,6 @@
-﻿namespace BadAppler.Base
+﻿using System.Collections.Generic;
+
+namespace BadAppler.Base
 {
     class FrameSequence<T> : Sequence<Frame<T>, FrameSequenceMeta> where T : struct
     {
@@ -11,5 +13,7 @@
         {
             get => Content.Count;
         }
+
+        public FrameSequence(IList<Frame<T>> frames, FrameSequenceMeta meta) : base(frames, meta) { }
     }
 }

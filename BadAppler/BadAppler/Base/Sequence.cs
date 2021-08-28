@@ -15,11 +15,11 @@ namespace BadAppler.Base
 
         public virtual int Count { get; protected set; }
 
-        public List<T> Content { get; init; }
+        public IList<T> Content { get; init; }
 
         public Sequence() { }
 
-        public Sequence(List<T> content, Y meta)
+        public Sequence(IList<T> content, Y meta)
         {
             Content = content;
             Meta = meta;
