@@ -14,11 +14,13 @@ namespace BadAppler
         public Sequence<T, Y> Sequence { get; set; } // Not sure that shadowing will be good here, but for now that doesn't really matter
     }
 
+    [Serializable]
     class CachedFrames<T> : Cached<Frame<T>, FrameSequenceMeta> where T : struct
     {
         public new FrameSequence<T> Sequence { get; set; } 
     }
 
+    [Serializable]
     class CachedEncoded<T, Y> : Cached<EncodedChunk<T>, Y> where T : struct
     {
         public new EncodedChunkSequence<T, Y> Sequence { get; set; }
@@ -26,37 +28,30 @@ namespace BadAppler
 
     class CacheManager
     {
-        public static CachedFrames<byte> LoadRaw(string path)
+        private static T loadCached<T>(string path)
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            CachedFrames<byte> rawFile;
+            T rawFile;
 
             using (FileStream fs = new FileStream(path, FileMode.Open))
-                rawFile = (CachedFrames<byte>)formatter.Deserialize(fs);
+                rawFile = (T)formatter.Deserialize(fs);
 
             return rawFile;
+        }
+
+        public static CachedFrames<byte> LoadRaw(string path)
+        {
+            return loadCached<CachedFrames<byte>>(path);
         }
 
         public static CachedFrames<char> LoadTranslated(string path)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            CachedFrames<char> rawFile;
-
-            using (FileStream fs = new FileStream(path, FileMode.Open))
-                rawFile = (CachedFrames<char>)formatter.Deserialize(fs);
-
-            return rawFile;
+            return loadCached<CachedFrames<char>>(path);
         }
 
         public static CachedEncoded<char, FrameSequenceMeta> LoadEncoded(string path)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            CachedEncoded<char, FrameSequenceMeta> rawFile;
-
-            using (FileStream fs = new FileStream(path, FileMode.Open))
-                rawFile = (CachedEncoded<char, FrameSequenceMeta>)formatter.Deserialize(fs);
-
-            return rawFile;
+            return loadCached<CachedEncoded<char, FrameSequenceMeta>>(path);
         }
     }
 }
