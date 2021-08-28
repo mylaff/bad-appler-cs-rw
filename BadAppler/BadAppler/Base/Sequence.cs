@@ -3,14 +3,13 @@
 namespace BadAppler.Base
 {
     class Sequence<T, Y>
-    {   
+    {
         /// <summary>
-        /// Sequence is a container to store different types of iterable and logically bound data such as frames, chunks etc paired with uniqie classes with metadata needed.
-        /// This class can be used on it's own, though it is realy meant to be inherited to avoid generic-hell.
+        /// Sequence is a container to store different types of iterable and logically bound data such as frames, chunks, etc paired with unique metadata classes.
+        /// This class can be used on its own, though it is meant to be inherited to avoid generic-hell.
         /// 
-        /// Count property *should* be overrided in different use cases, i.e. for FrameSequnece count could return amount of frames in Content, though as for 
-        /// ChunkSequence it could return overall amount of frames inside of chunks (instead of amount of chunks in content).
-        /// 
+        /// Count property *should* be overridden in different use cases, i.e. for FrameSequnece Count could return the number of frames in stored Content, whereas for 
+        /// ChunkSequence it could return the overall amount of frames inside of chunks (instead of the number of chunks stored in content).
         /// </summary>
         public Y Meta { get; init; }
 
