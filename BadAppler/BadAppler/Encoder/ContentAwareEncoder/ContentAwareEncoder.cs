@@ -1,5 +1,4 @@
 ﻿using BadAppler.Base;
-using BadAppler.Encoder;
 using BadAppler.Encoder.Base;
 using System.Collections.Generic;
 
