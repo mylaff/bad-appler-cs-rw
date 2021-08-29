@@ -35,14 +35,14 @@ namespace BadAppler.Translator
             return asciiFrame;
         }
 
-        public List<Frame<char>> Translate(List<Frame<byte>> frames, object settings)
+        public FrameSequence<char> Translate(FrameSequence<byte> frames, object settings)
         {
             List<Frame<char>> translated = new List<Frame<char>>();
 
             foreach (Frame<byte> frame in frames)
                 translated.Add(frameToAscii(frame));
 
-            return translated;
+            return new FrameSequence<char>(translated, frames.Meta);
         }
     }
 }
