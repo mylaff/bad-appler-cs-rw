@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace BadAppler.Base
 {
-    class Sequence<T, Y>
+    [Serializable]
+    class Sequence<T, Y> : IEnumerable<T>
     {
         /// <summary>
         /// Sequence is a container to store different types of iterable and logically bound data such as frames, chunks, etc paired with unique metadata classes.
@@ -24,5 +27,9 @@ namespace BadAppler.Base
             Content = content;
             Meta = meta;
         }
+
+        public IEnumerator<T> GetEnumerator() => Content.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

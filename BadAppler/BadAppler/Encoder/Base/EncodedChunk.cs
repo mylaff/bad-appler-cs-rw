@@ -1,9 +1,11 @@
 ﻿using BadAppler.Base;
+using System;
 using System.Collections.Generic;
 
 
 namespace BadAppler.Encoder.Base
 {
+    [Serializable]
     class EncodedChunk<T> where T : struct
     {
         public Frame<T> KeyFrame { get; init; }

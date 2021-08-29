@@ -1,5 +1,8 @@
-﻿namespace BadAppler.Encoder.Base
+﻿using System;
+
+namespace BadAppler.Encoder.Base
 {
+    [Serializable]
     struct PixelDelta<T>
     {
         public int X { get; init; }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BadAppler.Encoder.Base
 {
+    [Serializable]
     struct FrameDeltas<T>
     {
         public List<PixelDelta<T>> Deltas { get; private set; }

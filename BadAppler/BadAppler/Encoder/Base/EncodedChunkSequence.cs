@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BadAppler.Base;
 
 namespace BadAppler.Encoder.Base
 {
+    [Serializable]
     class EncodedChunkSequence<T, Y> : Sequence<EncodedChunk<T>, Y> where T : struct
     {
         public override int Count { get; protected set; }
