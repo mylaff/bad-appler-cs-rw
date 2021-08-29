@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BadAppler.Base
 {
+    [Serializable]
     class FrameSequence<T> : Sequence<Frame<T>, FrameSequenceMeta> where T : struct
     {
         public Frame<T> this[int param]
