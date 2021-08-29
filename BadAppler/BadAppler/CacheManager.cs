@@ -53,5 +53,28 @@ namespace BadAppler
         {
             return loadCached<CachedEncoded<char, FrameSequenceMeta>>(path);
         }
+
+        private static void saveCache<T, Y>(Cached<T, Y> cache, string path)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+                formatter.Serialize(fs, cache);
+        }
+
+        public static void SaveRaw(FrameSequence<byte> sequence, string outputPath)
+        {
+            saveCache(new CachedFrames<byte>() { Sequence = sequence, MusicFile = "" }, outputPath);
+        }
+
+        public static void SaveTranslated<T>(FrameSequence<T> translated, string outputPath) where T : struct
+        {
+            saveCache(new CachedFrames<T>() { Sequence = translated, MusicFile = "" }, outputPath);
+        }
+
+        public static void SaveEncoded<T, Y>(EncodedChunkSequence<T, Y> encoded, string outputPath, string musicPath="") where T : struct
+        {
+            saveCache(new CachedEncoded<T, Y>() { Sequence = encoded, MusicFile = musicPath }, outputPath);
+        }
     }
 }
